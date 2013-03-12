@@ -25,6 +25,7 @@ Page {
                 timetable = timetableDefinition.createObject();
                 navigation.push(timetable);
                 timetable.back.connect(navigation.pop);
+                tt.getConnections(from.text, to.text);
             }
         }
     }

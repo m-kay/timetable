@@ -5,15 +5,21 @@ Page {
         Label {
             text: "your connections"
         }
-        ActivityIndicator {
-            running: true
-        }
         ListView {
-            id: connectionsList
-            visible: false
-            onDataModelChanged: {
-                
-            }
+            objectName: "timetableList"
+            id: timetableList
+            listItemComponents: [
+                ListItemComponent {
+                    StandardListItem {
+                        status: {
+                            ListItemData.duration
+                        }
+                        description: {
+                            ListItemData.transfers
+                        }
+                    }
+                }
+            ]
         }
     }
 }

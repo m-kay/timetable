@@ -3,6 +3,7 @@
 #define Timetable_HPP_
 
 #include <QObject>
+#include <bb/cascades/AbstractPane>
 
 namespace bb { namespace cascades { class Application; }}
 
@@ -17,6 +18,15 @@ class Timetable : public QObject
 public:
     Timetable(bb::cascades::Application *app);
     virtual ~Timetable() {}
+
+    Q_INVOKABLE void getConnections(QString from, QString to);
+    Q_INVOKABLE QString testInvoke();
+
+public Q_SLOTS:
+	void onConnectionsList(QString data, bool success);
+
+protected:
+	bb::cascades::AbstractPane* m_root;
 };
 
 
