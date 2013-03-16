@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QDateTime>
 #include <QtNetwork/QNetworkReply>
 
 class DataLoader: public QObject {
@@ -18,7 +19,7 @@ public:
 	DataLoader();
 	virtual ~DataLoader();
 
-	void loadConnections(QString from, QString to);
+	void loadConnections(QString from, QString to, QDateTime time);
 
 public Q_SLOTS:
 	void onConnectionsReply(QNetworkReply* reply);

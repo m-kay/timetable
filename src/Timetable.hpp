@@ -19,8 +19,7 @@ public:
     Timetable(bb::cascades::Application *app);
     virtual ~Timetable() {}
 
-    Q_INVOKABLE void getConnections(QString from, QString to);
-    Q_INVOKABLE QString testInvoke();
+    Q_INVOKABLE void getConnections(QString from, QString to, QDateTime time);
 
 public Q_SLOTS:
 	void onConnectionsList(QString data, bool success);

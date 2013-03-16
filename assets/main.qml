@@ -4,7 +4,6 @@ import bb.cascades 1.0
 NavigationPane {
     id: navigation
     property variant timetable
-    
     firstPage: Page {
         Container {
             leftPadding: 10
@@ -12,16 +11,15 @@ NavigationPane {
             layout: StackLayout {
                 orientation: LayoutOrientation.TopToBottom
             }
-            Label {
-                text: tt.testInvoke();
-            }
             TextField {
                 id: from
                 hintText: "von"
+                text: "Amriswil"
             }
             TextField {
                 id: to
                 hintText: "bis"
+                text: "Zürich"
             }
             DateTimePicker {
                 id: time
@@ -30,10 +28,14 @@ NavigationPane {
             Button {
                 text: "search"
                 onClicked: {
-                    tt.getConnections("Amriswil", "Oberaach");
+                    tt.getConnections(from.text, to.text, time.value);
+                    if (timetable != undefined) {
+                         timetable.destroy();   
+                    }
                     timetable = timetableDefinition.createObject();
                     navigation.push(timetable);
                     timetable.back.connect(navigation.pop);
+                    timetable.back.connect(navigation.destroyTimetable);
                 }
             }
         }

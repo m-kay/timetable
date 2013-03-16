@@ -22,7 +22,7 @@ DataLoader::~DataLoader() {
 	// TODO Auto-generated destructor stub
 }
 
-void DataLoader::loadConnections(QString from, QString to){
+void DataLoader::loadConnections(QString from, QString to, QDateTime time){
 	QNetworkAccessManager* netManager = new QNetworkAccessManager();
 	if (!netManager)
 	{
@@ -34,7 +34,9 @@ void DataLoader::loadConnections(QString from, QString to){
 	QString queryUri = "http://transport.opendata.ch/v1/connections?";
 	queryUri += "from=" + from;
 	queryUri += "&to=" + to;
-	queryUri += "&limit=1";
+	queryUri += "&date=" + time.toString("yyyy-MM-dd");
+	queryUri += "&time=" + time.toString("hh:mm");
+	queryUri += "&limit=5";
 	QUrl url(queryUri);
 	QNetworkRequest req(url);
 

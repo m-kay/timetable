@@ -7,6 +7,7 @@
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/GroupDataModel>
 #include <bb/cascades/ListView>
+#include <bb/cascades/Label>
 #include <bb/data/JsonDataAccess>
 #include <QDebug>
 
@@ -23,16 +24,12 @@ Timetable::Timetable(bb::cascades::Application *app)
     app->setScene(m_root);
 }
 
-QString Timetable::testInvoke(){
-	return "test okay!";
-}
-
-void Timetable::getConnections(QString from, QString to){
+void Timetable::getConnections(QString from, QString to, QDateTime time){
 
     DataLoader* loader = new DataLoader();
     connect(loader, SIGNAL(connectionsLoaded(QString, bool)), this, SLOT(onConnectionsList(QString, bool)));
 
-    loader->loadConnections(from, to);
+    loader->loadConnections(from, to, time);
 }
 
 void Timetable::onConnectionsList(QString data, bool success){
@@ -43,29 +40,47 @@ void Timetable::onConnectionsList(QString data, bool success){
     }
 
     ListView* list = m_root->findChild<ListView*>("timetableList");
-    if (!list || list->dataModel() != NULL)
+    Label* head = m_root->findChild<Label*>("headInfo");
+    if (!list)
     {
-        qDebug() << "basic list already populated";
-        return; //if basic timeline list not found or already populated do nothing
+        qDebug() << "could not find list";
+        return;
     }
 
-    // Create a group data model with id as the sorting key
-    GroupDataModel* dm = new GroupDataModel();
+    GroupDataModel* dm = new GroupDataModel(QStringList() << "date");
     dm->setGrouping(ItemGrouping::None);
 
     // parse the json response with JsonDataAccess
     JsonDataAccess ja;
     QVariant jsonva = ja.loadFromBuffer(data);
+    QVariantList feed = jsonva.toMap()["connections"].toList();
 
-    // the qvariant is an array of tweets which is extracted as a list
-    QVariantList feed = jsonva.toList();
+    if(head){
+		head->setText(jsonva.toMap()["from"].toMap().value("name").toString() + " -> " + jsonva.toMap()["to"].toMap().value("name").toString());
+		head->setVisible(true);
+    }
 
-    // for each object in the array, push the variantmap in its raw form
-    // into the ListView
     for (QList<QVariant>::iterator it = feed.begin(); it != feed.end(); it++)
     {
-        QVariantMap tweet = it->toMap();
-        dm->insert(tweet);
+        QVariantMap conn = it->toMap();
+        QVariantMap* map = new QVariantMap();
+
+        QDateTime departure = QDateTime::fromString(conn["from"].toMap().value("departure").toString(), Qt::ISODate);
+        QDateTime arrival = QDateTime::fromString(conn["to"].toMap().value("arrival").toString(), Qt::ISODate);
+
+        qint64 msecs = departure.msecsTo(arrival);
+        QTime duration = QTime().addMSecs(msecs);
+
+        map->insert("date", departure);
+        map->insert("from", conn["from"].toMap().value("station").toMap().value("name"));
+        map->insert("to", conn["to"].toMap().value("station").toMap().value("name"));
+        map->insert("dep", departure.toString("hh:mm"));
+        map->insert("arr", arrival.toString("hh:mm"));
+        map->insert("duration", duration.toString("h:mm"));
+        map->insert("transfers", conn["transfers"]);
+        map->insert("platform", conn["from"].toMap().value("platform"));
+
+        dm->insert(*map);
     }
 
     // set the data model to display
