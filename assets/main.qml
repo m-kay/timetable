@@ -1,49 +1,27 @@
 // Default empty project template
 import bb.cascades 1.0
 
-NavigationPane {
-    id: navigation
-    property variant timetable
-    firstPage: Page {
-        Container {
-            leftPadding: 10
-            rightPadding: 10
-            layout: StackLayout {
-                orientation: LayoutOrientation.TopToBottom
-            }
-            TextField {
-                id: from
-                hintText: "von"
-                text: "Amriswil"
-            }
-            TextField {
-                id: to
-                hintText: "bis"
-                text: "Zürich"
-            }
-            DateTimePicker {
-                id: time
-                mode: DateTimePickerMode.DateTime
-            }
-            Button {
-                text: "search"
-                onClicked: {
-                    tt.getConnections(from.text, to.text, time.value);
-                    if (timetable != undefined) {
-                         timetable.destroy();   
-                    }
-                    timetable = timetableDefinition.createObject();
-                    navigation.push(timetable);
-                    timetable.back.connect(navigation.pop);
-                    timetable.back.connect(navigation.destroyTimetable);
-                }
+TabbedPane {
+    showTabsOnActionBar: true
+    Tab {
+        title: "Timetable"
+        SearchPage {
+        }
+    }
+    Tab {
+        title: "Favourites"
+        Page {
+            Label {
+                text: "recently searched connections"
             }
         }
     }
-    attachedObjects: [
-        ComponentDefinition {
-            id: timetableDefinition
-            source: "Timetable.qml"
+    Tab {
+        title: "Stationboard"
+        Page {
+            Label {
+                text: "shows connections from a specified station"
+            }
         }
-    ]
+    }
 }
