@@ -2,8 +2,7 @@ import bb.cascades 1.0
 
 Page {
     Container {
-        SbbHeader {
-            
+        SbbHeader {  
         }
         Container {
             leftPadding: 20
@@ -21,6 +20,18 @@ Page {
                 running: true
                 horizontalAlignment: HorizontalAlignment.Fill
             }
+            Label {
+                id: error
+                objectName: "error"
+                visible: false
+                multiline: true
+                text: "Error occured while loading data"
+                onVisibleChanged: {
+                     if(error.visible){
+                          loader.visible = false;   
+                     }   
+                }
+            }
             ListView {
                 visible: false
                 objectName: "timetableList"
@@ -33,6 +44,10 @@ Page {
                     if (timetableList.visible) {
                         loader.visible = false;
                     }
+                }
+                onTriggered: {
+                    console.log("clicked item " + indexPath); 
+                    console.log(timetableList.dataModel.data(indexPath).sections);
                 }
             }
         }

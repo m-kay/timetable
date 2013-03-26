@@ -55,6 +55,7 @@ NavigationPane {
             ComponentDefinition {
                 id: timetableDefinition
                 source: "timetable/Timetable.qml"
+                
             }
         ]
     }

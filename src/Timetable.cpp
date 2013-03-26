@@ -35,6 +35,11 @@ void Timetable::getConnections(QString from, QString to, QDateTime time){
 void Timetable::onConnectionsList(QString data, bool success){
     if (!success)
     {
+    	Label* error = m_root->findChild<Label*>("error");
+    	if(error){
+    		error->setText(data);
+    		error->setVisible(true);
+    	}
     	qDebug() << "Error retrieving connections: " << data;
     	return;
     }
@@ -79,6 +84,7 @@ void Timetable::onConnectionsList(QString data, bool success){
         map->insert("duration", duration.toString("h:mm"));
         map->insert("transfers", conn["transfers"]);
         map->insert("platform", conn["from"].toMap().value("platform"));
+        map->insert("sections", conn["sections"].toList());
 
         dm->insert(*map);
     }
