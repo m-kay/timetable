@@ -7,6 +7,7 @@ Container {
     }
     background: background.imagePaint
     minHeight: 80
+    maxHeight: 80
     leftPadding: 10
     Label {
         text: "Ab"

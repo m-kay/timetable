@@ -30,6 +30,15 @@ NavigationPane {
                 }
                 Button {
                     horizontalAlignment: HorizontalAlignment.Fill
+                    text: "gegenrichtung"
+                    onClicked: {
+                        var temp = from.text;
+                        from.text = to.text;
+                        to.text = temp;
+                    }
+                }
+                Button {
+                    horizontalAlignment: HorizontalAlignment.Fill
                     text: "search"
                     onClicked: {
                         tt.getConnections(from.text, to.text, time.value);
@@ -38,8 +47,6 @@ NavigationPane {
                         }
                         timetable = timetableDefinition.createObject();
                         navigation.push(timetable);
-                        timetable.back.connect(navigation.pop);
-                        timetable.back.connect(navigation.destroyTimetable);
                     }
                 }
             }
